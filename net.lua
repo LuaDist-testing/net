@@ -29,6 +29,7 @@
 
 --- assign to local
 local strerror = require('net.syscall').strerror;
+local pollable = require('net.poll').pollable;
 local waitrecv = require('net.poll').waitrecv;
 local waitsend = require('net.poll').waitsend;
 local unwaitrecv = require('net.poll').unwaitrecv;
@@ -242,13 +243,27 @@ end
 
 --- init
 -- @param sock
--- @param nonblock
 -- @param tls
 -- @return self
-function Socket:init( sock, nonblock, tls )
+-- @return err
+function Socket:init( sock, tls )
+    local nonblock, err;
+
+    if pollable() then
+        nonblock, err = sock:nonblock( true );
+    else
+        nonblock, err = sock:nonblock( false );
+    end
+
+    if err then
+        sock:close();
+        return err;
+    end
+
     self.sock = sock;
-    self.nonblock = nonblock == true;
+    self.nonblock = nonblock;
     self.tls = tls;
+
     return self;
 end
 

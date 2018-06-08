@@ -31,7 +31,6 @@ local llsocket = require('llsocket');
 local socket = llsocket.socket;
 local getaddrinfoInet = llsocket.inet.getaddrinfo;
 local getaddrinfoUnix = llsocket.unix.getaddrinfo;
-local pollable = require('net.poll').pollable;
 local waitrecv = require('net.poll').waitrecv;
 local waitsend = require('net.poll').waitsend;
 local sendsync = require('net.poll').sendsync;
@@ -196,6 +195,15 @@ Server.inherits {
 };
 
 
+--- createConnection
+-- @param sock
+-- @param tls
+-- @return Socket
+function Server:createConnection( sock, tls )
+    return Socket.new( sock, tls );
+end
+
+
 --- listen
 -- @param backlog
 -- @return err
@@ -222,7 +230,7 @@ function Server:accept()
                 end
             end
 
-            return Socket.new( sock, self.nonblock, tls );
+            return self:createConnection( sock, tls );
         elseif not again then
             return nil, err;
         -- wait until readable
@@ -302,14 +310,13 @@ end
 -- @return Socket
 -- @return err
 local function wrap( fd )
-    local nonblock = pollable();
     local sock, err = socket.wrap( fd );
 
     if err then
         return nil, err;
     end
 
-    return Socket.new( sock, nonblock );
+    return Socket.new( sock );
 end
 
 
