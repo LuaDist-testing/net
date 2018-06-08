@@ -1,16 +1,16 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "net"
-version = "0.22.0-1"
+version = "0.22.1-1"
 -- LuaDist source
 source = {
-  tag = "0.22.0-1",
+  tag = "0.22.1-1",
   url = "git://github.com/LuaDist-testing/net.git"
 }
 -- Original source
 -- source = {
 --     url = "git://github.com/mah0x211/lua-net.git",
---     tag = "v0.22.0"
+--     tag = "v0.22.1"
 -- }
 description = {
     summary = "net module",

@@ -1,7 +1,8 @@
 package = "net"
-version = "scm-1"
+version = "0.22.1-1"
 source = {
-    url = "git://github.com/mah0x211/lua-net.git"
+    url = "git://github.com/mah0x211/lua-net.git",
+    tag = "v0.22.1"
 }
 description = {
     summary = "net module",
@@ -13,7 +14,7 @@ dependencies = {
     "lua >= 5.1",
     "halo >= 1.1.8",
     "libtls >= 2.5.4",
-    "llsocket >= 0.8.0",
+    "llsocket >= 0.8.0"
 }
 build = {
     type = "builtin",
@@ -29,7 +30,7 @@ build = {
         ['net.dgram.unix'] = "lib/dgram/unix.lua",
         ['net.syscall'] = {
             sources = { "src/syscall.c" }
-        }
+        },
     }
 }
 
