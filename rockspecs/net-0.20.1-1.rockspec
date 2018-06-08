@@ -1,17 +1,9 @@
--- This file was automatically generated for the LuaDist project.
-
 package = "net"
-version = "0.20.0-1"
--- LuaDist source
+version = "0.20.1-1"
 source = {
-  tag = "0.20.0-1",
-  url = "git://github.com/LuaDist-testing/net.git"
+    url = "git://github.com/mah0x211/lua-net.git",
+    tag = "v0.20.1"
 }
--- Original source
--- source = {
---     url = "git://github.com/mah0x211/lua-net.git",
---     tag = "v0.20.0"
--- }
 description = {
     summary = "net module",
     homepage = "https://github.com/mah0x211/lua-net",
@@ -41,3 +33,4 @@ build = {
         },
     }
 }
+
