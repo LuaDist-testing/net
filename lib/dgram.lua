@@ -30,8 +30,8 @@
 local llsocket = require('llsocket');
 local getaddrinfoInet = llsocket.inet.getaddrinfo;
 local getaddrinfoUnix = llsocket.unix.getaddrinfo;
-local readable = require('net.poll').readable;
-local writable = require('net.poll').writable;
+local waitrecv = require('net.poll').waitrecv;
+local waitsend = require('net.poll').waitsend;
 local recvfromsync = require('net.poll').recvfromsync;
 local sendsync = require('net.poll').sendsync;
 -- constants
@@ -157,7 +157,8 @@ function Socket:recvfrom()
             return str, addr, err, again;
         -- wait until readable
         else
-            local ok, perr, timeout = readable( self:fd(), self.rcvdeadl );
+            local ok, perr, timeout = waitrecv( self:fd(), self.rcvdeadl,
+                                                self.rcvhook, self.rcvhookctx );
 
             if not ok then
                 return nil, nil, perr, timeout;
@@ -200,7 +201,8 @@ function Socket:sendto( str, addr )
             return sent, err, again;
         -- wait until writable
         else
-            local ok, perr, timeout = writable( self:fd(), self.snddeadl );
+            local ok, perr, timeout = waitsend( self:fd(), self.snddeadl,
+                                                self.sndhook, self.sndhookctx );
 
             if not ok then
                 return sent, perr, timeout;
