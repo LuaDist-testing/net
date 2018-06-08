@@ -1,17 +1,9 @@
--- This file was automatically generated for the LuaDist project.
-
 package = "net"
-version = "0.19.1-1"
--- LuaDist source
+version = "0.20.0-1"
 source = {
-  tag = "0.19.1-1",
-  url = "git://github.com/LuaDist-testing/net.git"
+    url = "git://github.com/mah0x211/lua-net.git",
+    tag = "v0.20.0"
 }
--- Original source
--- source = {
---     url = "git://github.com/mah0x211/lua-net.git",
---     tag = "v0.19.1"
--- }
 description = {
     summary = "net module",
     homepage = "https://github.com/mah0x211/lua-net",
@@ -35,6 +27,10 @@ build = {
         ['net.stream.unix'] = "lib/stream/unix.lua",
         ['net.dgram'] = "lib/dgram.lua",
         ['net.dgram.inet'] = "lib/dgram/inet.lua",
-        ['net.dgram.unix'] = "lib/dgram/unix.lua"
+        ['net.dgram.unix'] = "lib/dgram/unix.lua",
+        ['net.syscall'] = {
+            sources = { "src/syscall.c" }
+        },
     }
 }
+

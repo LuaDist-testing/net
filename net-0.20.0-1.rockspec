@@ -1,8 +1,17 @@
+-- This file was automatically generated for the LuaDist project.
+
 package = "net"
-version = "scm-1"
+version = "0.20.0-1"
+-- LuaDist source
 source = {
-    url = "git://github.com/mah0x211/lua-net.git"
+  tag = "0.20.0-1",
+  url = "git://github.com/LuaDist-testing/net.git"
 }
+-- Original source
+-- source = {
+--     url = "git://github.com/mah0x211/lua-net.git",
+--     tag = "v0.20.0"
+-- }
 description = {
     summary = "net module",
     homepage = "https://github.com/mah0x211/lua-net",
@@ -13,7 +22,7 @@ dependencies = {
     "lua >= 5.1",
     "halo >= 1.1.8",
     "libtls >= 2.5.4",
-    "llsocket"
+    "llsocket >= 0.6.1"
 }
 build = {
     type = "builtin",
@@ -29,7 +38,6 @@ build = {
         ['net.dgram.unix'] = "lib/dgram/unix.lua",
         ['net.syscall'] = {
             sources = { "src/syscall.c" }
-        }
+        },
     }
 }
-
