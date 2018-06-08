@@ -32,6 +32,8 @@ local getaddrinfoInet = llsocket.inet.getaddrinfo;
 local getaddrinfoUnix = llsocket.unix.getaddrinfo;
 local readable = require('net.poll').readable;
 local writable = require('net.poll').writable;
+local recvfromsync = require('net.poll').recvfromsync;
+local sendsync = require('net.poll').sendsync;
 -- constants
 local SOCK_DGRAM = llsocket.SOCK_DGRAM;
 local IPPROTO_UDP = llsocket.IPPROTO_UDP;
@@ -165,14 +167,23 @@ function Socket:recvfrom()
 end
 
 
+--- recvfromsync
+-- @return str
+-- @return addr
+-- @return err
+-- @return timeout
+function Socket:recvfromsync( ... )
+    return recvfromsync( self, self.recvfrom, ... );
+end
+
+
 --- sendto
--- @param self
 -- @param str
 -- @param addr
 -- @return len
 -- @return err
 -- @return timeout
-local function sendto( self, str, addr )
+function Socket:sendto( str, addr )
     local sent = 0;
 
     while true do
@@ -201,60 +212,14 @@ local function sendto( self, str, addr )
 end
 
 
---- sendtoqred
--- @param self
--- @param args
---  [1] str
---  [2] addr
--- @return len number of bytes sent or queued
--- @return err
--- @return timeout
-local function sendtoqred( self, args )
-    local len, err, timeout = sendto( self, args[1], args[2] );
-
-    -- update message string
-    if timeout and len > 0 then
-        args[1] = args[1]:sub( len + 1 );
-    end
-
-    return len, err, timeout;
-end
-
-
---- sendto
+--- sendtosync
 -- @param str
 -- @param addr
--- @return len number of bytes sent or queued
+-- @return len
 -- @return err
 -- @return timeout
-function Socket:sendto( str, addr )
-    if self.msgqtail == 0 then
-        local len, err, timeout = sendto( self, str, addr );
-
-        if timeout then
-            self:sendtoq( len == 0 and str or str:sub( len + 1 ), addr );
-        end
-
-        return len, err, timeout;
-    end
-
-    -- put into send queue
-    self:sendtoq( str, addr );
-
-    return self:flushq();
-end
-
-
---- sendto
--- @param str
--- @param addr
-function Socket:sendtoq( str, addr )
-    self.msgqtail = self.msgqtail + 1;
-    self.msgq[self.msgqtail] = {
-        fn = sendtoqred,
-        str,
-        addr
-    };
+function Socket:sendtosync( ... )
+    return sendsync( self, self.sendto, ... );
 end
 
 

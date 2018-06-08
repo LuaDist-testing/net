@@ -29,6 +29,8 @@
 -- assign to local
 local readable = require('net.poll').readable;
 local writable = require('net.poll').writable;
+local recvsync = require('net.poll').recvsync;
+local sendsync = require('net.poll').sendsync;
 
 
 -- MARK: class Socket
@@ -41,25 +43,20 @@ Socket.inherits {
 
 
 --- sendfd
--- @param self
 -- @param fd
 -- @param ai
--- @return len number of bytes sent
+-- @return len
 -- @return err
 -- @return timeout
-local function sendfd( self, fd, ai )
-    local sock, fn;
-
+function Socket:sendfd( fd, ai )
     if self.tls then
         -- currently, does not support sendfd on tls connection
         -- EOPNOTSUPP: Operation not supported on socket
         return nil, 'Operation not supported on socket';
-    else
-        sock, fn = self.sock, self.sock.sendfd;
     end
 
     while true do
-        local len, err, again = fn( sock, fd, ai );
+        local len, err, again = self.sock:sendfd( fd, ai );
 
         if not len then
             return nil, err;
@@ -77,54 +74,14 @@ local function sendfd( self, fd, ai )
 end
 
 
---- sendfdqred
--- @param self
--- @param args
---  [1] fd
---  [2] ai
--- @return len number of bytes sent or queued
--- @return err
--- @return timeout
-local function sendfdqred( self, args )
-    return sendfd( self, args[1], args[2] );
-end
-
-
---- sendfd
+--- sendfdsync
 -- @param fd
 -- @param ai
--- @return len number of bytes sent or queued
+-- @return len
 -- @return err
 -- @return timeout
-function Socket:sendfd( fd, ai )
-    if self.msgqtail == 0 then
-        local len, err, timeout = sendfd( self, fd, ai );
-
-        if timeout then
-            self:sendfdq( fd );
-        end
-
-        return len, err, timeout;
-    end
-
-    -- put into send queue
-    self:sendfdq( fd, ai );
-
-    return self:flushq();
-end
-
-
---- sendfdq
--- @param fd
--- @param ai
-function Socket:sendfdq( fd, ai )
-    -- put str into message queue
-    self.msgqtail = self.msgqtail + 1;
-    self.msgq[self.msgqtail] = {
-        fn = sendfdqred,
-        fd,
-        ai
-    };
+function Socket:sendfdsync( ... )
+    return sendsync( self, self.sendfd, ... );
 end
 
 
@@ -133,18 +90,14 @@ end
 -- @return err
 -- @return timeout
 function Socket:recvfd()
-    local sock, fn;
-
     if self.tls then
         -- currently, does not support recvmsg on tls connection
         -- EOPNOTSUPP: Operation not supported on socket
         return nil, 'Operation not supported on socket';
-    else
-        sock, fn = self.sock, self.sock.recvfd;
     end
 
     while true do
-        local fd, err, again = fn( sock );
+        local fd, err, again = self.sock:recvfd();
 
         if not again or not self.nonblock then
             return fd, err, again;
@@ -157,6 +110,15 @@ function Socket:recvfd()
             end
         end
     end
+end
+
+
+--- recvfdsync
+-- @return fd
+-- @return err
+-- @return timeout
+function Socket:recvfdsync( ... )
+    return recvsync( self, self.recvfd, ... );
 end
 
 
