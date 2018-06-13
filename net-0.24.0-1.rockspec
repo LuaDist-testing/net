@@ -1,16 +1,16 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "net"
-version = "0.23.0-1"
+version = "0.24.0-1"
 -- LuaDist source
 source = {
-  tag = "0.23.0-1",
-  url = "git://github.com/LuaDist-testing/net.git"
+  url = "git://github.com/LuaDist-testing/net.git",
+  tag = "0.24.0-1"
 }
 -- Original source
 -- source = {
 --     url = "git://github.com/mah0x211/lua-net.git",
---     tag = "v0.23.0"
+--     tag = "v0.24.0"
 -- }
 description = {
     summary = "net module",
@@ -21,8 +21,9 @@ description = {
 dependencies = {
     "lua >= 5.1",
     "halo >= 1.1.8",
-    "libtls >= 2.7.3",
-    "llsocket >= 0.8.0"
+    "libtls >= 2.7.3-2",
+    "llsocket >= 0.11.0",
+    "iovec >= 0.1.0",
 }
 build = {
     type = "builtin",

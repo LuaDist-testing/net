@@ -1,7 +1,8 @@
 package = "net"
-version = "scm-1"
+version = "0.24.0-1"
 source = {
-    url = "git://github.com/mah0x211/lua-net.git"
+    url = "git://github.com/mah0x211/lua-net.git",
+    tag = "v0.24.0"
 }
 description = {
     summary = "net module",
@@ -30,7 +31,7 @@ build = {
         ['net.dgram.unix'] = "lib/dgram/unix.lua",
         ['net.syscall'] = {
             sources = { "src/syscall.c" }
-        }
+        },
     }
 }
 
